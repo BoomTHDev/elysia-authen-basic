@@ -1,7 +1,8 @@
-import { Elysia } from "elysia";
+import { Elysia } from 'elysia';
+import { authRoutes } from './route';
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+export const app = new Elysia({ prefix: '/api' })
+  .use(authRoutes)
+  .listen(3002);
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+console.log('🦊 Elysia is running at http://localhost:3002');
