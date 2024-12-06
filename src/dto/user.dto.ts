@@ -5,6 +5,7 @@ interface UserDTO {
   findUserByEmail: (email: string) => Promise<User | null>;
   createUser: (user: UserReq) => Promise<User>;
   verifyPassword: (password: string, hash: string) => Promise<boolean>;
+  findAllUser: () => Promise<User[] | null>;
 };
 
 type UserReq = {
@@ -34,5 +35,9 @@ export const userDTO: UserDTO = {
   },
   verifyPassword: async (password: string, hash: string) => {
     return await Bun.password.verify(password, hash);
+  },
+  findAllUser: async () => {
+    const users = await db.user.findMany();
+    return users;
   },
 };

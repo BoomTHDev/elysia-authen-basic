@@ -23,7 +23,6 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
     const token = auth && auth.startsWith('Bearer ') ? auth.slice(7) : null;
   
     if (!token) {
-      console.log('No token found in Authorization header');
       return { user: null };
     }
   
@@ -31,7 +30,6 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       const user = await jwt_auth.verify(token); // ตรวจสอบ token
       return { user };
     } catch (error) {
-      console.error('JWT Verification failed:', error);
       return { user: null };
     }
   })
@@ -57,7 +55,7 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
     });
 
     set.status = 200;
-    return token;
+    return { token };
   }, {
     body
   })
@@ -88,7 +86,7 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       role: user.role,
     });
 
-    return token;
+    return { token };
   }, { body })
 
   .guard({
@@ -99,5 +97,10 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
     app.get('/me', ({ user, error }) => {
       if (!user) return error(401, "Not Authorized");
       return user
+    }),
+
+    app.get('/users', ({ user, error }) => {
+      if (!user) return error(401, "Not Authorized");
+      return userDTO.findAllUser();
     })
   ));
